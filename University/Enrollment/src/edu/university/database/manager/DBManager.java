@@ -19,7 +19,7 @@ public class DBManager {
 	String url = "";
 	String driverName = "";
 
-	private static Connection connection = null;
+	private Connection connection = null;
 
 	/*
 	 * Default constructor
@@ -29,16 +29,15 @@ public class DBManager {
 	}
 
 	/**
-	 * This method is called to return a connection to the database. If the
-	 * driver has not already been loaded, this method will first load the
-	 * driver, then return the newly created connection to the calling class.
+	 * The method that instantiates the class, which establishes and returns the
+	 * database connection.
 	 * 
-	 * @return Connection
+	 * @return
 	 */
-	public static Connection getConnection() {
+	public static DBManager getDBManager() {
 
 		if (dbManager == null) {
-			DBManager dbManager = new DBManager();
+			dbManager = new DBManager();
 			if (dbManager.loadDriver()) {
 				System.out.println("SQL Server connection established successfully.");
 			} else {
@@ -46,8 +45,16 @@ public class DBManager {
 			}
 		}
 
-		return connection;
+		return dbManager;
+	}
 
+	/**
+	 * Returns a connection to the database.
+	 * 
+	 * @return
+	 */
+	public Connection getConnection() {
+		return connection;
 	}
 
 	/**
@@ -55,7 +62,7 @@ public class DBManager {
 	 * 
 	 * @return
 	 */
-	public boolean loadDriver() {
+	private boolean loadDriver() {
 		boolean success = false;
 
 		if (loadDbProperties(propertyFileLocation)) {
@@ -73,6 +80,7 @@ public class DBManager {
 				Class.forName(driverName);
 				connection = DriverManager.getConnection(url, userName, password);
 				success = true;
+				System.out.println("Connection established.");
 			} catch (ClassNotFoundException e) {
 				System.out.println("ClassNotFoundException = " + e.toString());
 			} catch (SQLException e) {
@@ -118,8 +126,17 @@ public class DBManager {
 	 */
 	public static void main(String[] args) {
 
-		dbManager.getConnection();
+		DBManager dbManager = DBManager.getDBManager();
 
+		if (null == dbManager) {
+			System.out.println("dbManager is null.");
+		} else {
+			if (null != dbManager.getConnection()) {
+				System.out.println("Connection returned.");
+			} else {
+				System.out.println("Connection was NOT returned.");
+			}
+		}
 	}
 
 }

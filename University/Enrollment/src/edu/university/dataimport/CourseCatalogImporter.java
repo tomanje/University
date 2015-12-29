@@ -29,7 +29,8 @@ public class CourseCatalogImporter {
 	 * Default constructor
 	 */
 	public CourseCatalogImporter() {
-		connection = DBManager.getConnection();
+		DBManager dbManager = DBManager.getDBManager();
+		connection = dbManager.getConnection();
 		try {
 			insertPs = connection.prepareStatement(insertStatement);
 			selectPs = connection.prepareStatement(selectStatement);
